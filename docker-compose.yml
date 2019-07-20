@@ -18,7 +18,7 @@ services:
     image: nginx:latest
     restart: always
     volumes:
-      - ./nginx/default:/etc/nginx/conf.d
+      - ./nginx:/etc/nginx/conf.d
       - /usr/project/minio/certbot/conf:/etc/letsencrypt
       - /usr/project/minio/certbot/www:/var/www/certbot
     ports:
