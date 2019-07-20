@@ -15,8 +15,6 @@ services:
     command: server /data
   nginx:
     image: nginx:latest
-    depends_on:
-      minio
     restart: always
     volumes:
       - ./nginx:/etc/nginx/conf.d
