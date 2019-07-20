@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  minio:
+    image: minio/minio
+    container_name: minio
+    volumes:
+      - /usr/project/minio/data:/data
+      - /usr/project/minio/config:/root/.minio
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: VjaJ58zake
+      MINIO_SECRET_KEY: lLPkCgQAKdohcqiQm7hdSLspiDBoVUJK
+    command: server /data
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx/default:/etc/nginx/conf.d
+      - /usr/project/minio/certbot/conf:/etc/letsencrypt
+      - /usr/project/minio/certbot/www:/var/www/certbot
+    ports:
+      - "80:80"
+      - "443:443"
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+
+  certbot:
+    image: certbot/certbot
+    restart: always
+    volumes:
+      - /usr/project/minio/certbot/conf:/etc/letsencrypt
+      - /usr/project/minio/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"

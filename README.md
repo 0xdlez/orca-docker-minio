@@ -1,2 +1,1 @@
-# docker-minio
-docker-minio
+# minio-js
