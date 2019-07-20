@@ -13,9 +13,10 @@ services:
       MINIO_ACCESS_KEY: VjaJ58zake
       MINIO_SECRET_KEY: lLPkCgQAKdohcqiQm7hdSLspiDBoVUJK
     command: server /data
-
   nginx:
     image: nginx:latest
+    depends_on:
+      minio
     restart: always
     volumes:
       - ./nginx:/etc/nginx/conf.d
@@ -24,7 +25,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    command: '--network="host" /bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
 
   certbot:
     image: certbot/certbot
